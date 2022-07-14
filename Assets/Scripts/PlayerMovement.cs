@@ -8,9 +8,16 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] float jumpSpeed = 0f;
 
+    [SerializeField] float jumpButtonGracePeriod = 0.2f;
+
+
     private CharacterController characterController = null;
     private float ySpeed;
     private float originalStepOffSet;
+
+    private float? lastGroundedTime;
+
+    private float? jumpButtonPressedTime;
 
     // Start is called before the first frame update
     void Start()
@@ -33,14 +40,29 @@ public class PlayerMovement : MonoBehaviour
 
         if (characterController.isGrounded)
         {
+            lastGroundedTime = Time.time;
+        }
+
+        if (Input.GetButtonDown("Jump"))
+        {
+            jumpButtonPressedTime = Time.time;
+        }
+
+        if (Time.time - lastGroundedTime <= jumpButtonGracePeriod)
+        {
             characterController.stepOffset = originalStepOffSet;
             ySpeed = -0.5f;
-            if (Input.GetButtonDown("Jump"))
+            if (Time.time - jumpButtonPressedTime <= jumpButtonGracePeriod)
             {
 
                 ySpeed = jumpSpeed;
+                lastGroundedTime = null;
+                jumpButtonPressedTime = null;
             }
-        } else{
+
+        }
+        else
+        {
             characterController.stepOffset = 0;
         }
 
