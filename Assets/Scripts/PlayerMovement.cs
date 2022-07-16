@@ -19,9 +19,12 @@ public class PlayerMovement : MonoBehaviour
 
     private float? jumpButtonPressedTime;
 
+    Animator animator;
+
     // Start is called before the first frame update
     void Start()
     {
+        animator = GetComponent<Animator>();
         characterController = GetComponent<CharacterController>();
         originalStepOffSet = characterController.stepOffset;
     }
@@ -72,9 +75,13 @@ public class PlayerMovement : MonoBehaviour
 
         if (movementDirection != Vector3.zero)
         {
+
+            animator.SetBool("IsRunning", true); 
             Quaternion toRotation = Quaternion.LookRotation(movementDirection, Vector3.up);
 
             transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, rotationSpeed * Time.deltaTime);
+        } else {
+            animator.SetBool("IsRunning", false);
         }
     }
 }
